@@ -4,6 +4,9 @@ public class Program
 {
     public static void Main()
     {
+        System.Threading.Thread.CurrentThread.CurrentCulture =
+            System.Globalization.CultureInfo.InvariantCulture;
+
         PatientManager patients = new PatientManager();
         DoctorManager doctors = new DoctorManager();
 
@@ -28,7 +31,9 @@ public class Program
             "O+",
             "0933456789"));
 
-        patients.Add(new Patient("Марія", "Ткач"));
+        patients.Add(new Patient(
+            "Марія",
+            "Ткач"));
 
         Doctor doctor1 = new Doctor(
             "Олег",
@@ -63,6 +68,37 @@ public class Program
         doctors.Add(doctor1);
         doctors.Add(doctor2);
         doctors.Add(doctor3);
+
+        Appointment appointment1 = new Appointment(
+            1,
+            1,
+            new DateTime(2026, 5, 9, 10, 0,0),
+            30);
+
+        Appointment appointment2 = new Appointment(
+            2,
+            2,
+            new DateTime(2026, 5, 9, 11, 0,0),
+            45);
+
+        Appointment appointment3 = new Appointment(
+            3,
+            3,
+            new DateTime(2026, 5, 10, 9, 0,0),
+            20);
+
+        Console.WriteLine();
+        Console.WriteLine(appointment1);
+        Console.WriteLine(appointment2);
+        Console.WriteLine(appointment3);
+
+        appointment1.Cancel("Пацієнт не зміг прийти");
+        appointment2.Complete();
+
+        Console.WriteLine();
+        Console.WriteLine("// Після Cancel та Complete:");
+        Console.WriteLine(appointment1);
+        Console.WriteLine(appointment2);
 
         while (true)
         {
@@ -197,100 +233,101 @@ public class Program
             }
         }
     }
+
     public static void DoctorsMenu(DoctorManager doctors)
-{
-    while (true)
     {
-        Console.WriteLine();
-        Console.WriteLine("=== Лікарі ===");
-        Console.WriteLine("1. Показати всіх");
-        Console.WriteLine("2. Додати лікаря");
-        Console.WriteLine("3. Знайти за спеціальністю");
-        Console.WriteLine("4. Видалити за ID");
-        Console.WriteLine("5. Статистика");
-        Console.WriteLine("0. Назад");
-        Console.Write("Ваш вибір: ");
-
-        string choice = Console.ReadLine()!;
-
-        if (choice == "0")
+        while (true)
         {
-            break;
-        }
+            Console.WriteLine();
+            Console.WriteLine("=== Лікарі ===");
+            Console.WriteLine("1. Показати всіх");
+            Console.WriteLine("2. Додати лікаря");
+            Console.WriteLine("3. Знайти за спеціальністю");
+            Console.WriteLine("4. Видалити за ID");
+            Console.WriteLine("5. Статистика");
+            Console.WriteLine("0. Назад");
+            Console.Write("Ваш вибір: ");
 
-        if (choice == "1")
-        {
-            doctors.DisplayAll();
-        }
-        else if (choice == "2")
-        {
-            Console.Write("Ім'я: ");
-            string firstName = Console.ReadLine()!;
+            string choice = Console.ReadLine()!;
 
-            Console.Write("Прізвище: ");
-            string lastName = Console.ReadLine()!;
-
-            Console.Write("Спеціальність: ");
-            string speciality = Console.ReadLine()!;
-
-            Console.Write("Номер ліцензії: ");
-            string licenseNumber = Console.ReadLine()!;
-
-            Console.Write("Телефон: ");
-            string phone = Console.ReadLine()!;
-
-            Doctor doctor = new Doctor(
-                firstName,
-                lastName,
-                speciality,
-                licenseNumber,
-                phone);
-
-            doctors.Add(doctor);
-        }
-        else if (choice == "3")
-        {
-            Console.Write("Введіть спеціальність: ");
-            string speciality = Console.ReadLine()!;
-
-            Doctor[] found = doctors.FindBySpeciality(speciality);
-
-            if (found.Length == 0)
+            if (choice == "0")
             {
-                Console.WriteLine("Лікарів не знайдено.");
+                break;
             }
-            else
+
+            if (choice == "1")
             {
-                for (int i = 0; i < found.Length; i++)
+                doctors.DisplayAll();
+            }
+            else if (choice == "2")
+            {
+                Console.Write("Ім'я: ");
+                string firstName = Console.ReadLine()!;
+
+                Console.Write("Прізвище: ");
+                string lastName = Console.ReadLine()!;
+
+                Console.Write("Спеціальність: ");
+                string speciality = Console.ReadLine()!;
+
+                Console.Write("Номер ліцензії: ");
+                string licenseNumber = Console.ReadLine()!;
+
+                Console.Write("Телефон: ");
+                string phone = Console.ReadLine()!;
+
+                Doctor doctor = new Doctor(
+                    firstName,
+                    lastName,
+                    speciality,
+                    licenseNumber,
+                    phone);
+
+                doctors.Add(doctor);
+            }
+            else if (choice == "3")
+            {
+                Console.Write("Введіть спеціальність: ");
+                string speciality = Console.ReadLine()!;
+
+                Doctor[] found = doctors.FindBySpeciality(speciality);
+
+                if (found.Length == 0)
                 {
-                    Console.WriteLine(found[i]);
+                    Console.WriteLine("Лікарів не знайдено.");
+                }
+                else
+                {
+                    for (int i = 0; i < found.Length; i++)
+                    {
+                        Console.WriteLine(found[i]);
+                    }
                 }
             }
-        }
-        else if (choice == "4")
-        {
-            Console.Write("Введіть ID: ");
-            int id = int.Parse(Console.ReadLine()!);
-
-            bool removed = doctors.Remove(id);
-
-            if (removed)
+            else if (choice == "4")
             {
-                Console.WriteLine("Лікаря видалено.");
+                Console.Write("Введіть ID: ");
+                int id = int.Parse(Console.ReadLine()!);
+
+                bool removed = doctors.Remove(id);
+
+                if (removed)
+                {
+                    Console.WriteLine("Лікаря видалено.");
+                }
+                else
+                {
+                    Console.WriteLine("Лікаря не знайдено.");
+                }
+            }
+            else if (choice == "5")
+            {
+                doctors.DisplayStats();
             }
             else
             {
-                Console.WriteLine("Лікаря не знайдено.");
+                Console.WriteLine("Невідомий пункт меню.");
             }
         }
-        else if (choice == "5")
-        {
-            doctors.DisplayStats();
-        }
-        else
-        {
-            Console.WriteLine("Невідомий пункт меню.");
-        }
     }
-}
 }
