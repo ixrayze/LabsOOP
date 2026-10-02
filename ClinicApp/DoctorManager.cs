@@ -15,6 +15,18 @@ public class DoctorManager
             return _count;
         }
     }
+    public Doctor? this[int index]
+    {
+        get
+        {
+            if (index < 0 || index >= _count)
+            {
+                return null;
+            }
+
+            return _doctors[index];
+        }
+    }
 
     public void Add(Doctor doctor)
     {
