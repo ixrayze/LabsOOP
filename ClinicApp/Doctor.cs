@@ -10,7 +10,7 @@ public class Doctor
 
     public string LastName { get; set; }
 
-    public string Speciality { get; set; }
+    public Speciality Speciality { get; set; }
 
     public string LicenseNumber { get; set; }
 
@@ -53,11 +53,11 @@ public class Doctor
     }
 
     public Doctor()
-        : this("Невідомий", "Лікар", "Невідомо")
+        : this("Невідомий", "Лікар", Speciality.General)
     {
     }
 
-    public Doctor(string firstName, string lastName, string speciality)
+    public Doctor(string firstName, string lastName, Speciality speciality)
         : this(
             firstName,
             lastName,
@@ -70,7 +70,7 @@ public class Doctor
     public Doctor(
         string firstName,
         string lastName,
-        string speciality,
+        Speciality speciality,
         string licenseNumber,
         string phone)
     {

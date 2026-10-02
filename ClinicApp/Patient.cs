@@ -12,7 +12,7 @@ public class Patient
 
     public DateTime DateOfBirth { get; set; }
 
-    public string BloodType { get; set; }
+    public BloodType BloodType { get; set; }
 
     public string Phone { get; set; }
 
@@ -59,7 +59,7 @@ public class Patient
             firstName,
             lastName,
             new DateTime(2000, 1, 1),
-            "Невідомо",
+            BloodType.Unknown,
             "0000000000")
     {
     }
@@ -68,7 +68,7 @@ public class Patient
         string firstName,
         string lastName,
         DateTime dob,
-        string bloodType,
+        BloodType bloodType,
         string phone)
     {
         Id = _nextId++;

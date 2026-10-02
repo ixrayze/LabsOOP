@@ -51,7 +51,7 @@ public class DoctorManager
 
         for (int i = 0; i < _count; i++)
         {
-            if (_doctors[i].Speciality.ToLower().Contains(search))
+            if (_doctors[i].Speciality.ToString().ToLower().Contains(search))
             {
                 foundCount++;
             }
@@ -63,7 +63,7 @@ public class DoctorManager
 
         for (int i = 0; i < _count; i++)
         {
-            if (_doctors[i].Speciality.ToLower().Contains(search))
+            if (_doctors[i].Speciality.ToString().ToLower().Contains(search))
             {
                 result[index] = _doctors[i];
                 index++;
@@ -159,8 +159,7 @@ public class DoctorManager
 
             for (int j = 0; j < i; j++)
             {
-                if (_doctors[j].Speciality.ToLower() ==
-                    _doctors[i].Speciality.ToLower())
+                if (_doctors[j].Speciality == _doctors[i].Speciality)
                 {
                     alreadyPrinted = true;
                     break;
@@ -176,8 +175,7 @@ public class DoctorManager
 
             for (int j = 0; j < _count; j++)
             {
-                if (_doctors[j].Speciality.ToLower() ==
-                    _doctors[i].Speciality.ToLower())
+                if (_doctors[j].Speciality == _doctors[i].Speciality)
                 {
                     specialityCount++;
                 }

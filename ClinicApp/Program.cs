@@ -13,21 +13,21 @@ public class Program
             "Іван",
             "Петренко",
             new DateTime(1985, 5, 15),
-            "A+",
+            BloodType.APositive,
             "0501234567"));
 
         clinic.Patients.Add(new Patient(
             "Олена",
             "Коваль",
             new DateTime(1993, 8, 20),
-            "B-",
+            BloodType.BNegative,
             "0672345678"));
 
         clinic.Patients.Add(new Patient(
             "Максим",
             "Бойко",
             new DateTime(2010, 3, 10),
-            "O+",
+            BloodType.OPositive,
             "0933456789"));
 
         clinic.Patients.Add(new Patient(
@@ -37,21 +37,21 @@ public class Program
         Doctor doctor1 = new Doctor(
             "Олег",
             "Сидоренко",
-            "Кардіологія",
+            Speciality.Cardiology,
             "LIC-001",
             "0441234567");
 
         Doctor doctor2 = new Doctor(
             "Наталія",
             "Мороз",
-            "Неврологія",
+            Speciality.Neurology,
             "LIC-002",
             "0442345678");
 
         Doctor doctor3 = new Doctor(
             "Андрій",
             "Власенко",
-            "Педіатрія",
+            Speciality.Pediatrics,
             "LIC-003",
             "0443456789");
 
@@ -268,9 +268,23 @@ public class Program
                 int day =
                     int.Parse(Console.ReadLine()!);
 
-                Console.Write("Група крові: ");
-                string bloodType =
-                    Console.ReadLine()!;
+                Console.WriteLine("Група крові:");
+                Console.WriteLine("0. Unknown");
+                Console.WriteLine("1. APositive");
+                Console.WriteLine("2. ANegative");
+                Console.WriteLine("3. BPositive");
+                Console.WriteLine("4. BNegative");
+                Console.WriteLine("5. ABPositive");
+                Console.WriteLine("6. ABNegative");
+                Console.WriteLine("7. OPositive");
+                Console.WriteLine("8. ONegative");
+                Console.Write("Ваш вибір: ");
+
+                int bloodTypeNumber =
+                    int.Parse(Console.ReadLine()!);
+
+                BloodType bloodType =
+                    (BloodType)bloodTypeNumber;
 
                 Console.Write("Телефон: ");
                 string phone =
@@ -385,9 +399,22 @@ public class Program
                 string lastName =
                     Console.ReadLine()!;
 
-                Console.Write("Спеціальність: ");
-                string speciality =
-                    Console.ReadLine()!;
+                Console.WriteLine("Спеціальність:");
+                Console.WriteLine("0. General");
+                Console.WriteLine("1. Cardiology");
+                Console.WriteLine("2. Neurology");
+                Console.WriteLine("3. Pediatrics");
+                Console.WriteLine("4. Surgery");
+                Console.WriteLine("5. Orthopedics");
+                Console.WriteLine("6. Dermatology");
+                Console.WriteLine("7. Emergency");
+                Console.Write("Ваш вибір: ");
+
+                int specialityNumber =
+                    int.Parse(Console.ReadLine()!);
+
+                Speciality speciality =
+                    (Speciality)specialityNumber;
 
                 Console.Write("Номер ліцензії: ");
                 string licenseNumber =
