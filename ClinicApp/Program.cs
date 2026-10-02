@@ -93,7 +93,11 @@ public class Program
             3,
             new DateTime(2026, 5, 10, 9, 0, 0),
             20);
-
+        
+        string name =
+            clinic.Patients.FindById(99)?.FullName
+            ?? "не знайдено";
+        
         TestGrowablePatientManager();
 
         while (true)
@@ -674,15 +678,12 @@ public class Program
                     int.Parse(
                         Console.ReadLine()!);
 
-                DateTime date =
-                    new DateTime(
-                        year,
-                        month,
-                        day);
-
                 Appointment[] found =
                     clinic.Appointments
-                        .GetByDate(date);
+                        .GetByDate(
+                            year,
+                            month,
+                            day);
 
                 clinic.Appointments
                     .DisplayList(found);

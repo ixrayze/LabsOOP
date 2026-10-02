@@ -15,6 +15,7 @@ public class DoctorManager
             return _count;
         }
     }
+
     public Doctor? this[int index]
     {
         get
@@ -55,6 +56,20 @@ public class DoctorManager
         return null;
     }
 
+    public bool TryFindById(int id, out Doctor doctor)
+    {
+        Doctor? found = FindById(id);
+
+        if (found != null)
+        {
+            doctor = found;
+            return true;
+        }
+
+        doctor = null!;
+        return false;
+    }
+
     public Doctor[] FindBySpeciality(string speciality)
     {
         string search = speciality.ToLower();
@@ -76,6 +91,34 @@ public class DoctorManager
         for (int i = 0; i < _count; i++)
         {
             if (_doctors[i].Speciality.ToString().ToLower().Contains(search))
+            {
+                result[index] = _doctors[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+    public Doctor[] FindBySpeciality(Speciality speciality)
+    {
+        int foundCount = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_doctors[i].Speciality == speciality)
+            {
+                foundCount++;
+            }
+        }
+
+        Doctor[] result = new Doctor[foundCount];
+
+        int index = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_doctors[i].Speciality == speciality)
             {
                 result[index] = _doctors[i];
                 index++;
