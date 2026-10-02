@@ -55,14 +55,22 @@ public class Program
             "LIC-003",
             "0443456789");
 
-        doctor1.WorkStartHour = 8;
-        doctor1.WorkEndHour = 16;
+        doctor1.Schedule = new WorkSchedule(8, 16);
+        doctor2.Schedule = new WorkSchedule(9, 18);
+        doctor3.Schedule = new WorkSchedule(8, 17);
 
-        doctor2.WorkStartHour = 9;
-        doctor2.WorkEndHour = 18;
+        WorkSchedule morning = new WorkSchedule(8, 16);
+        WorkSchedule evening = new WorkSchedule(14, 22);
 
-        doctor3.WorkStartHour = 8;
-        doctor3.WorkEndHour = 17;
+        Console.WriteLine(morning);
+        Console.WriteLine(evening);
+        Console.WriteLine(morning.IsNow);
+
+        WorkSchedule copy = morning;
+        copy = new WorkSchedule(9, 17);
+
+        Console.WriteLine(morning);
+        Console.WriteLine(copy);
 
         clinic.Doctors.Add(doctor1);
         clinic.Doctors.Add(doctor2);
