@@ -1,20 +1,66 @@
-namespace ClinicApp;
+using ClinicApp.Enums;
+using ClinicApp.Utils;
+
+namespace ClinicApp.Models;
 
 public class Doctor
 {
     private static int _nextId = 1;
 
+    private string _firstName = "";
+    private string _lastName = "";
+    private string _licenseNumber = "";
+    private string _phone = "";
+
     public int Id { get; }
 
-    public string FirstName { get; set; }
+    public string FirstName
+    {
+        get => _firstName;
+        set
+        {
+            ClinicValidator.ValidateName(value, nameof(FirstName));
+            _firstName = value;
+        }
+    }
 
-    public string LastName { get; set; }
+    public string LastName
+    {
+        get => _lastName;
+        set
+        {
+            ClinicValidator.ValidateName(value, nameof(LastName));
+            _lastName = value;
+        }
+    }
 
     public Speciality Speciality { get; set; }
 
-    public string LicenseNumber { get; set; }
+    public string LicenseNumber
+    {
+        get => _licenseNumber;
+        set
+        {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                throw new ArgumentException(
+                    "Номер ліцензії не може бути порожнім.",
+                    nameof(LicenseNumber));
+            }
 
-    public string Phone { get; set; }
+            _licenseNumber = value;
+        }
+    }
+
+    public string Phone
+    {
+        get => _phone;
+        set
+        {
+            ClinicValidator.ValidatePhone(value);
+            _phone = value;
+        }
+    }
 
     public WorkSchedule Schedule { get; set; }
 
@@ -56,8 +102,6 @@ public class Doctor
         string licenseNumber,
         string phone)
     {
-        Id = _nextId++;
-
         FirstName = firstName;
         LastName = lastName;
         Speciality = speciality;
@@ -65,6 +109,8 @@ public class Doctor
         Phone = phone;
 
         Schedule = new WorkSchedule(8, 17);
+
+        Id = _nextId++;
     }
 
     public bool CanAcceptAt(int hour)

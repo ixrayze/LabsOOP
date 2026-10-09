@@ -1,8 +1,13 @@
-namespace ClinicApp;
+using ClinicApp.Enums;
+using ClinicApp.Utils;
+
+namespace ClinicApp.Models;
 
 public class Appointment
 {
     private static int _nextId = 1;
+
+    private int _durationMinutes;
 
     public int Id { get; }
 
@@ -12,7 +17,15 @@ public class Appointment
 
     public DateTime ScheduledAt { get; set; }
 
-    public int DurationMinutes { get; set; }
+    public int DurationMinutes
+    {
+        get => _durationMinutes;
+        set
+        {
+            ClinicValidator.ValidatePositive(value, nameof(DurationMinutes));
+            _durationMinutes = value;
+        }
+    }
 
     public AppointmentStatus Status { get; private set; }
 
@@ -41,9 +54,6 @@ public class Appointment
         DateTime scheduledAt,
         int durationMinutes = 30)
     {
-        Id = _nextId;
-        _nextId++;
-
         PatientId = patientId;
         DoctorId = doctorId;
         ScheduledAt = scheduledAt;
@@ -51,6 +61,9 @@ public class Appointment
 
         Status = AppointmentStatus.Scheduled;
         Notes = "";
+
+        Id = _nextId;
+        _nextId++;
     }
 
     public bool Cancel(string reason = "")
