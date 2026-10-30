@@ -1034,6 +1034,8 @@ public class Program
                 "7. Завершити запис");
             Console.WriteLine(
                 "8. Скасувати всі записи пацієнта");
+            Console.WriteLine(
+                "9. За типом прийому");
             Console.WriteLine("0. Назад");
             Console.Write("Ваш вибір: ");
 
@@ -1265,6 +1267,38 @@ public class Program
                         AppointmentManager.CancelAll(appointments, reason);
 
                     Console.WriteLine($"Скасовано записів: {cancelledCount}");
+                }
+                
+                else if (choice == "9")
+                {
+                    Console.WriteLine("1. Термінові");
+                    Console.WriteLine("2. Консультації спеціаліста");
+                    Console.WriteLine("3. Звичайні");
+                    Console.Write("Оберіть: ");
+
+                    string? typeChoice = Console.ReadLine();
+
+                    Appointment[] found;
+
+                    if (typeChoice == "1")
+                    {
+                        found = clinic.Appointments.GetUrgent();
+                    }
+                    else if (typeChoice == "2")
+                    {
+                        found = clinic.Appointments.GetSpecialist();
+                    }
+                    else if (typeChoice == "3")
+                    {
+                        found = clinic.Appointments.GetRegular();
+                    }
+                    else
+                    {
+                        Console.WriteLine("Невідомий тип прийому.");
+                        continue;
+                    }
+
+                    clinic.Appointments.DisplayList(found);
                 }
                 else
                 {

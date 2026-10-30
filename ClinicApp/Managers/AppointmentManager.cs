@@ -196,8 +196,7 @@ public class AppointmentManager
             }
         }
 
-        Appointment[] result =
-            new Appointment[foundCount];
+        Appointment[] result = new Appointment[foundCount];
 
         int index = 0;
 
@@ -225,8 +224,7 @@ public class AppointmentManager
             }
         }
 
-        Appointment[] result =
-            new Appointment[foundCount];
+        Appointment[] result = new Appointment[foundCount];
 
         int index = 0;
 
@@ -254,8 +252,7 @@ public class AppointmentManager
             }
         }
 
-        Appointment[] result =
-            new Appointment[foundCount];
+        Appointment[] result = new Appointment[foundCount];
 
         int index = 0;
 
@@ -289,14 +286,94 @@ public class AppointmentManager
             }
         }
 
-        Appointment[] result =
-            new Appointment[foundCount];
+        Appointment[] result = new Appointment[foundCount];
 
         int index = 0;
 
         for (int i = 0; i < _count; i++)
         {
             if (_appointments[i].IsUpcoming)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+    public Appointment[] GetUrgent()
+    {
+        int foundCount = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is UrgentAppointment)
+            {
+                foundCount++;
+            }
+        }
+
+        Appointment[] result = new Appointment[foundCount];
+        int index = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is UrgentAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+    public Appointment[] GetSpecialist()
+    {
+        int foundCount = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is SpecialistAppointment)
+            {
+                foundCount++;
+            }
+        }
+
+        Appointment[] result = new Appointment[foundCount];
+        int index = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is SpecialistAppointment)
+            {
+                result[index] = _appointments[i];
+                index++;
+            }
+        }
+
+        return result;
+    }
+
+    public Appointment[] GetRegular()
+    {
+        int foundCount = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is RegularAppointment)
+            {
+                foundCount++;
+            }
+        }
+
+        Appointment[] result = new Appointment[foundCount];
+        int index = 0;
+
+        for (int i = 0; i < _count; i++)
+        {
+            if (_appointments[i] is RegularAppointment)
             {
                 result[index] = _appointments[i];
                 index++;
@@ -337,7 +414,7 @@ public class AppointmentManager
         }
 
         Console.Write(
-            $"[{appointment.Id}] " +
+            $"[{appointment.Id}] {appointment.GetDescription()} | " +
             $"{patientName} → {doctorName} | " +
             $"{appointment.ScheduledAt:dd.MM.yyyy HH:mm}" +
             $"–{appointment.EndsAt:HH:mm} | " +
@@ -348,7 +425,7 @@ public class AppointmentManager
             Console.Write($" | {appointment.Notes}");
         }
 
-        Console.WriteLine();
+        Console.WriteLine($" | {appointment.GetCost():F2} грн");
     }
 
     public void DisplayList(Appointment[] appointments)
