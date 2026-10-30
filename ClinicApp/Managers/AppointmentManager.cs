@@ -1,3 +1,4 @@
+
 using ClinicApp.Models;
 using ClinicApp.Interfaces;
 
@@ -20,6 +21,7 @@ public class AppointmentManager
             return _count;
         }
     }
+
     public Appointment? this[int index]
     {
         get
@@ -47,22 +49,67 @@ public class AppointmentManager
         DateTime scheduledAt,
         int durationMinutes)
     {
-        Patient? patient = _patients.FindById(patientId);
+        Appointment appointment = new RegularAppointment(
+            patientId,
+            doctorId,
+            scheduledAt,
+            durationMinutes);
+
+        return AddAppointment(appointment);
+    }
+
+    public bool BookUrgent(
+        int patientId,
+        int doctorId,
+        DateTime scheduledAt,
+        string urgencyNote = "",
+        int durationMinutes = 30)
+    {
+        Appointment appointment = new UrgentAppointment(
+            patientId,
+            doctorId,
+            scheduledAt,
+            urgencyNote,
+            durationMinutes);
+
+        return AddAppointment(appointment);
+    }
+
+    public bool BookSpecialist(
+        int patientId,
+        int doctorId,
+        DateTime scheduledAt,
+        string topic = "",
+        int durationMinutes = 45)
+    {
+        Appointment appointment = new SpecialistAppointment(
+            patientId,
+            doctorId,
+            scheduledAt,
+            topic,
+            durationMinutes);
+
+        return AddAppointment(appointment);
+    }
+
+    private bool AddAppointment(Appointment appointment)
+    {
+        Patient? patient = _patients.FindById(appointment.PatientId);
 
         if (patient == null)
         {
             Console.WriteLine(
-                $"Помилка: пацієнта з ID {patientId} не знайдено.");
+                $"Помилка: пацієнта з ID {appointment.PatientId} не знайдено.");
 
             return false;
         }
 
-        Doctor? doctor = _doctors.FindById(doctorId);
+        Doctor? doctor = _doctors.FindById(appointment.DoctorId);
 
         if (doctor == null)
         {
             Console.WriteLine(
-                $"Помилка: лікаря з ID {doctorId} не знайдено.");
+                $"Помилка: лікаря з ID {appointment.DoctorId} не знайдено.");
 
             return false;
         }
@@ -73,19 +120,13 @@ public class AppointmentManager
             return false;
         }
 
-        Appointment appointment = new Appointment(
-            patientId,
-            doctorId,
-            scheduledAt,
-            durationMinutes);
-
         _appointments[_count] = appointment;
         _count++;
 
         Console.WriteLine(
             $"Запис [{appointment.Id}] створено: " +
             $"{patient.FullName} → {doctor.FullName} о " +
-            $"{scheduledAt:dd.MM.yyyy HH:mm}");
+            $"{appointment.ScheduledAt:dd.MM.yyyy HH:mm}");
 
         return true;
     }
@@ -113,7 +154,7 @@ public class AppointmentManager
 
         return appointment.Complete();
     }
-    
+
     public static int CancelAll(
         ICancellable[] items,
         string reason = "")
@@ -130,7 +171,7 @@ public class AppointmentManager
 
         return cancelledCount;
     }
-    
+
     public Appointment[] GetAll()
     {
         Appointment[] result = new Appointment[_count];
@@ -229,6 +270,7 @@ public class AppointmentManager
 
         return result;
     }
+
     public Appointment[] GetByDate(int year, int month, int day)
     {
         DateTime date = new DateTime(year, month, day);

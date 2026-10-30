@@ -88,23 +88,46 @@ public class Program
         
         SeedMedicalRecords(clinic);
 
+
         clinic.Appointments.Book(
             1,
             1,
             new DateTime(2026, 5, 9, 10, 0, 0),
             30);
 
-        clinic.Appointments.Book(
+        clinic.Appointments.BookUrgent(
             2,
             2,
             new DateTime(2026, 5, 9, 11, 0, 0),
+            "біль у грудях",
             45);
 
-        clinic.Appointments.Book(
+        clinic.Appointments.BookSpecialist(
             3,
             3,
             new DateTime(2026, 5, 10, 9, 0, 0),
+            "кардіологія",
             20);
+
+        Console.WriteLine();
+        Console.WriteLine("== new vs override ==");
+
+        UrgentAppointment urgent =
+            new UrgentAppointment(
+                1,
+                1,
+                DateTime.Today.AddDays(1),
+                "тест");
+
+        Appointment appointment = urgent;
+
+        Console.WriteLine(
+            $"Через Appointment: {appointment.GetDescription()} | " +
+            $"пріоритет {appointment.GetPriority()}");
+
+        Console.WriteLine(
+            $"Через UrgentAppointment: {urgent.GetDescription()} | " +
+            $"пріоритет {urgent.GetPriority()}");
 
         string name =
             clinic.Patients.FindById(99)?.FullName
