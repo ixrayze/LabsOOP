@@ -42,9 +42,12 @@ public class Appointment : IPayable, ICancellable
     
     public bool IsPaid => _isPaid;
 
+// Варіант А: спільний множник знижки для всіх типів прийомів.
+// Це дозволяє застосовувати знижку без змін у підкласах.
+    public decimal DiscountMultiplier { get; set; } = 1m;
     public virtual decimal GetCost()
     {
-        return DurationMinutes * 10m;
+        return DurationMinutes * 10m * DiscountMultiplier;
     }
 
     public virtual string GetDescription()
