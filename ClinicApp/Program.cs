@@ -6,6 +6,7 @@ using ClinicApp.Utils;
 using System.Globalization;
 using System.Text;
 using ClinicApp.Interfaces;
+using ClinicApp.Comparators;
 
 
 public class Program
@@ -146,6 +147,7 @@ public class Program
             Console.WriteLine("5. Рахунки       — оплата, борги");
             Console.WriteLine("6. Черга         — очікування, прийом");
             Console.WriteLine("7. Звіт          — загальна статистика");
+            Console.WriteLine("8. Аналітика     — рейтинги лікарів і пацієнтів");
             Console.WriteLine("0. Вийти");
             Console.Write("Ваш вибір: ");
 
@@ -186,6 +188,10 @@ public class Program
                 {
                     clinic.GenerateReport();
                 }
+                else if (choice == "8")
+                {
+                    AnalyticsMenu(clinic);
+                }
                 else
                 {
                     Console.WriteLine("Невідомий пункт меню.");
@@ -214,6 +220,129 @@ public class Program
         }
     }
     
+    public static void AnalyticsMenu(Clinic clinic)
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("── Аналітика ───────────────────");
+            Console.WriteLine("  1. Лікарі за навантаженням");
+            Console.WriteLine("  2. Лікарі за виручкою");
+            Console.WriteLine("  3. Лікарі за іменем");
+            Console.WriteLine("  4. Пацієнти за кількістю візитів");
+            Console.WriteLine("  5. Пацієнти за витратами");
+            Console.WriteLine("  0. Назад");
+            Console.Write("Оберіть: ");
+
+            string? choice = Console.ReadLine();
+
+            if (choice == "0" || choice == null)
+            {
+                return;
+            }
+
+            if (choice == "1")
+            {
+                List<DoctorStats> stats = CollectDoctorStats(clinic);
+
+                // Sort() без аргументу використовує IComparable<DoctorStats>.
+                stats.Sort();
+
+                DisplayDoctorStats(stats);
+            }
+            else if (choice == "2")
+            {
+                List<DoctorStats> stats = CollectDoctorStats(clinic);
+
+                stats.Sort(new DoctorStatsByRevenue());
+
+                DisplayDoctorStats(stats);
+            }
+            else if (choice == "3")
+            {
+                List<DoctorStats> stats = CollectDoctorStats(clinic);
+
+                stats.Sort(new DoctorStatsByName());
+
+                DisplayDoctorStats(stats);
+            }
+            else if (choice == "4")
+            {
+                List<PatientStats> stats = CollectPatientStats(clinic);
+
+                // Sort() без аргументу використовує IComparable<PatientStats>.
+                stats.Sort();
+
+                DisplayPatientStats(stats);
+            }
+            else if (choice == "5")
+            {
+                List<PatientStats> stats = CollectPatientStats(clinic);
+
+                stats.Sort(new PatientStatsBySpent());
+
+                DisplayPatientStats(stats);
+            }
+            else
+            {
+                Console.WriteLine("Невідомий пункт меню.");
+            }
+        }
+    }
+
+    // Ітератор не можна сортувати напряму, тому збираємо його результат у List.
+    public static List<DoctorStats> CollectDoctorStats(Clinic clinic)
+    {
+        List<DoctorStats> result = new List<DoctorStats>();
+
+        foreach (DoctorStats stats in clinic.Analytics.ComputeDoctorStats())
+        {
+            result.Add(stats);
+        }
+
+        return result;
+    }
+
+    public static List<PatientStats> CollectPatientStats(Clinic clinic)
+    {
+        List<PatientStats> result = new List<PatientStats>();
+
+        foreach (PatientStats stats in clinic.Analytics.ComputePatientStats())
+        {
+            result.Add(stats);
+        }
+
+        return result;
+    }
+
+    public static void DisplayDoctorStats(List<DoctorStats> stats)
+    {
+        if (stats.Count == 0)
+        {
+            Console.WriteLine("Лікарів не знайдено.");
+            return;
+        }
+
+        foreach (DoctorStats item in stats)
+        {
+            Console.WriteLine(item);
+        }
+    }
+
+    public static void DisplayPatientStats(List<PatientStats> stats)
+    {
+        if (stats.Count == 0)
+        {
+            Console.WriteLine("Пацієнтів не знайдено.");
+            return;
+        }
+
+        foreach (PatientStats item in stats)
+        {
+            Console.WriteLine(item);
+        }
+    }
+
     public static void WaitingRoomMenu(Clinic clinic)
     {
         while (true)
