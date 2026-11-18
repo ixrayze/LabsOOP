@@ -148,6 +148,7 @@ public class Program
             Console.WriteLine("6. Черга         — очікування, прийом");
             Console.WriteLine("7. Звіт          — загальна статистика");
             Console.WriteLine("8. Аналітика     — рейтинги лікарів і пацієнтів");
+            Console.WriteLine("9. Плани лікування — рефлексія, атрибути");
             Console.WriteLine("0. Вийти");
             Console.Write("Ваш вибір: ");
 
@@ -191,6 +192,10 @@ public class Program
                 else if (choice == "8")
                 {
                     AnalyticsMenu(clinic);
+                }
+                else if (choice == "9")
+                {
+                    TreatmentPlansMenu(clinic);
                 }
                 else
                 {
@@ -340,6 +345,156 @@ public class Program
         foreach (PatientStats item in stats)
         {
             Console.WriteLine(item);
+        }
+    }
+
+    public static void TreatmentPlansMenu(Clinic clinic)
+    {
+        while (true)
+        {
+            Console.WriteLine();
+            Console.WriteLine("── Плани лікування ────────────────────");
+            Console.WriteLine("  1. Показати всі плани");
+            Console.WriteLine("  2. Додати план лікування");
+            Console.WriteLine("  3. Плани пацієнта");
+            Console.WriteLine("  4. Активувати план");
+            Console.WriteLine("  5. Завершити план");
+            Console.WriteLine("  6. Скасувати план");
+            Console.WriteLine("  7. Інформація про тип TreatmentPlan");
+            Console.WriteLine("  0. Назад");
+            Console.Write("Оберіть: ");
+
+            string? choice = Console.ReadLine();
+
+            if (choice == "0" || choice == null)
+            {
+                return;
+            }
+
+            if (choice == "1")
+            {
+                DisplayTreatmentPlans(clinic.TreatmentPlans.GetAll());
+            }
+            else if (choice == "2")
+            {
+                // Форма будується через рефлексію за атрибутами TreatmentPlan;
+                // невалідний план Add не прийме і сам виведе помилки.
+                TreatmentPlan plan = FormBuilder.Build<TreatmentPlan>();
+
+                clinic.TreatmentPlans.Add(plan);
+            }
+            else if (choice == "3")
+            {
+                Console.Write("ID пацієнта: ");
+
+                if (!int.TryParse(Console.ReadLine(), out int patientId))
+                {
+                    Console.WriteLine("Некоректний ID пацієнта.");
+                    continue;
+                }
+
+                DisplayTreatmentPlans(clinic.TreatmentPlans.GetByPatient(patientId));
+            }
+            else if (choice == "4")
+            {
+                TreatmentPlan? plan = AskTreatmentPlan(clinic);
+
+                if (plan == null)
+                {
+                    continue;
+                }
+
+                if (plan.Activate())
+                {
+                    Console.WriteLine($"План [{plan.Id}] активовано.");
+                }
+                else
+                {
+                    Console.WriteLine(
+                        $"Неможливо активувати план зі статусом {plan.Status}.");
+                }
+            }
+            else if (choice == "5")
+            {
+                TreatmentPlan? plan = AskTreatmentPlan(clinic);
+
+                if (plan == null)
+                {
+                    continue;
+                }
+
+                if (plan.Complete())
+                {
+                    Console.WriteLine($"План [{plan.Id}] завершено.");
+                }
+                else
+                {
+                    Console.WriteLine(
+                        $"Неможливо завершити план зі статусом {plan.Status}.");
+                }
+            }
+            else if (choice == "6")
+            {
+                TreatmentPlan? plan = AskTreatmentPlan(clinic);
+
+                if (plan == null)
+                {
+                    continue;
+                }
+
+                if (plan.Cancel())
+                {
+                    Console.WriteLine($"План [{plan.Id}] скасовано.");
+                }
+                else
+                {
+                    Console.WriteLine(
+                        $"Неможливо скасувати план зі статусом {plan.Status}.");
+                }
+            }
+            else if (choice == "7")
+            {
+                // Рефлексія працює з типом, екземпляр не потрібен.
+                ModelValidator.PrintInfo(typeof(TreatmentPlan));
+            }
+            else
+            {
+                Console.WriteLine("Невідомий пункт меню.");
+            }
+        }
+    }
+
+    public static TreatmentPlan? AskTreatmentPlan(Clinic clinic)
+    {
+        Console.Write("ID плану: ");
+
+        if (!int.TryParse(Console.ReadLine(), out int planId))
+        {
+            Console.WriteLine("Некоректний ID плану.");
+            return null;
+        }
+
+        TreatmentPlan? plan = clinic.TreatmentPlans.GetById(planId);
+
+        if (plan == null)
+        {
+            Console.WriteLine("План не знайдено.");
+        }
+
+        return plan;
+    }
+
+    public static void DisplayTreatmentPlans(TreatmentPlan[] plans)
+    {
+        if (plans.Length == 0)
+        {
+            Console.WriteLine("Планів лікування не знайдено.");
+            return;
+        }
+
+        for (int i = 0; i < plans.Length; i++)
+        {
+            Console.WriteLine(plans[i]);
         }
     }
 
